@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ptsoft.pis.system.model.vo.SysStoreOther" >
+  <resultMap id="BaseResultMap" type="com.ptsoft.pis.system.model.vo.SysStoreOther" >
+    <result column="STCD" property="stCd" jdbcType="VARCHAR" />
+    <result column="STNM" property="stNm" jdbcType="VARCHAR" />
+    <result column="POSCD" property="posCd" jdbcType="VARCHAR" />
+    <result column="ATNDNCCRDCD" property="atndnCd" jdbcType="VARCHAR" />
+    <result column="RNTSZ" property="rntSz" jdbcType="DOUBLE" />
+    <result column="OPRTNAR" property="oprtnAr" jdbcType="DOUBLE" />
+    <result column="FLR" property="flr" jdbcType="INTEGER" />
+    <result column="STQNT" property="stQnt" jdbcType="INTEGER" />
+	<result column="OPNDT" property="opnDt" jdbcType="VARCHAR" />
+	<result column="CLSDT" property="clsDt" jdbcType="VARCHAR" />
+	<result column="OPNTM" property="opnTm" jdbcType="VARCHAR" />
+	<result column="CLSTM" property="clsTm" jdbcType="VARCHAR" />
+    <result column="POSCNT" property="posCnt" jdbcType="INTEGER" />
+    <result column="SHFTCNT" property="shftCnt" jdbcType="INTEGER" />
+    <result column="DCCD" property="dcCd" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="SysStoreOther_getById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    Select o.STCD, s.STNM, o.POSCD, o.ATNDNCCRDCD, o.RNTSZ, o.OPRTNAR, o.FLR, o.STQNT, o.OPNDT, o.CLSDT, o.OPNTM, o.CLSTM, o.POSCNT, o.SHFTCNT, o.dccd
+    From SysStoreOther o
+    Left join SysStore s On s.stCd = o.stCd
+    Where o.stCd = #{stCd,jdbcType=VARCHAR}
+  </select>
+  
+  <insert id="SysStoreOther_insert" parameterType="com.ptsoft.pis.system.model.vo.SysStoreOther">
+  	Insert into SysStoreOther (STCD) Values(#{stCd,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="SysStoreOther_update" parameterType="com.ptsoft.pis.system.model.vo.SysStoreOther">
+  	Update SysStoreOther 
+  	Set POSCD= #{posCd, jdbcType=VARCHAR},
+    ATNDNCCRDCD= #{atndnCd, jdbcType=VARCHAR},
+    RNTSZ= #{rntSz, jdbcType=DOUBLE},
+    OPRTNAR= #{oprtnAr, jdbcType=DOUBLE},
+    FLR= #{flr, jdbcType=INTEGER},
+    STQNT= #{stQnt, jdbcType=INTEGER},
+	OPNDT= #{opnDt, jdbcType=VARCHAR},
+	CLSDT= #{clsDt, jdbcType=VARCHAR},
+	OPNTM= #{opnTm, jdbcType=VARCHAR},
+	CLSTM= #{clsTm, jdbcType=VARCHAR},
+    POSCNT= #{posCnt, jdbcType=INTEGER},
+    SHFTCNT= #{shftCnt, jdbcType=INTEGER},
+    DCCD = #{dcCd, jdbcType=VARCHAR}
+    Where STCD=#{stCd,jdbcType=VARCHAR}
+  </update>
+</mapper>

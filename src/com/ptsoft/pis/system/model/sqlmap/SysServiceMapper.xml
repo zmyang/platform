@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ptsoft.pis.system.dao.SysServiceMapper">
+	<resultMap id="BaseResultMap" type="com.ptsoft.pis.system.model.vo.SysService">
+		<id 	column="svrKey" 	property="svrKey" 		jdbcType="VARCHAR" />
+		<result column="clsName" 	property="clsName" 		jdbcType="VARCHAR" />
+		<result column="firstDate" 	property="firstDate" 	jdbcType="VARCHAR" />
+		<result column="firstTime" 	property="firstTime" 	jdbcType="VARCHAR" />
+		<result column="delayTime" 	property="delayTime" 	jdbcType="INTEGER" />
+		<result column="autoRun" 	property="autoRun" 		jdbcType="INTEGER" />
+		<result column="status" 	property="status" 		jdbcType="INTEGER" />
+		<result column="memo" 		property="memo" 		jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="SysService_findall" resultMap="BaseResultMap">
+		Select svrKey, clsName, firstDate, firstTime, delayTime, autoRun, status, memo
+		From SysService
+		Order by SvrKey
+	</select>
+	
+	<select id="SysService_getById" resultMap="BaseResultMap" parameterType="string">
+		Select svrKey, clsName, firstDate, firstTime, delayTime, autoRun, status, memo
+		From SysService
+		Where SvrKey = #{svrKey,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="SysService_update" parameterType="com.ptsoft.pis.system.model.vo.SysService">
+		Update SysService
+		Set Status = #{status,jdbcType=INTEGER}
+		Where svrKey = #{svrKey,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

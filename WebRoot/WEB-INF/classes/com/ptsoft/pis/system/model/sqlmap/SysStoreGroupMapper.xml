@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ptsoft.pis.system.dao.SysStoreGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.ptsoft.pis.system.model.vo.SysStoreGroup" >
+    <id column="GRPID" property="grpId" jdbcType="INTEGER" />
+    <result column="GRPNM" property="grpNm" jdbcType="VARCHAR" />
+    <result column="CMNTS" property="cmnts" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="DetailsResultMap" type="com.ptsoft.pis.system.model.vo.SysStoreGroupMap" >
+    <result column="GRPID" property="grpid" jdbcType="INTEGER" />
+    <result column="STCD" property="stcd" jdbcType="VARCHAR" />
+    <result column="STNM" property="stnm" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    Select GRPID, GRPNM, CMNTS From SYSSTOREGROUP
+  </sql>
+  
+  <select id="SysStoreGroup_findAll" resultMap="BaseResultMap" >
+    <include refid="Base_Column_List" />
+    Order by GRPID
+  </select>
+  
+  <select id="SysStoreGroup_getById" resultMap="BaseResultMap" parameterType="java.math.BigDecimal" >
+    <include refid="Base_Column_List" />
+    where GRPID = #{grpId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="SysStoreGroup_delete" parameterType="java.math.BigDecimal" >
+    delete from SYSSTOREGROUP
+    where GRPID = #{grpId,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="SysStoreGroup_insert" parameterType="com.ptsoft.pis.system.model.vo.SysStoreGroup" >
+  	<selectKey resultType="int" keyProperty="grpId" order="BEFORE">
+		Select LAST_INSERT_ID()+1 from SYSSTOREGROUP
+    </selectKey>
+    insert into SYSSTOREGROUP (GRPID, GRPNM, CMNTS)
+    values (#{grpId,jdbcType=INTEGER}, #{grpNm,jdbcType=VARCHAR}, #{cmnts,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="SysStoreGroup_update" parameterType="com.ptsoft.pis.system.model.vo.SysStoreGroup" >
+    update SYSSTOREGROUP
+    set GRPNM = #{grpNm,jdbcType=VARCHAR},
+    CMNTS = #{cmnts,jdbcType=VARCHAR}
+    where GRPID = #{grpId,jdbcType=INTEGER}
+  </update>
+  
+  
+  
+  <select id="getDetails" parameterType="string" resultMap="DetailsResultMap">
+  	Select m.grpid, m.stcd, s.stnm 
+	From SysStoreGroupMap m 
+	Left join SysStore s On s.stcd = m.stcd
+	Where grpid = #{grpid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getDetailCount" parameterType="string" resultType="int">
+ 	 select count(*) from sysstoregroupmap p where p.grpid=#{grpid,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteDetails" parameterType="string">
+  	Delete From SysStoreGroupMap Where grpid = #{grpid,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="saveDetails" parameterType="com.ptsoft.pis.system.model.vo.SysStoreGroupMap">
+  	Insert into SysStoreGroupMap (grpid, stcd)
+  	Values ( #{grpid,jdbcType=INTEGER}, #{stcd,jdbcType=VARCHAR} )
+  </insert>
+</mapper>

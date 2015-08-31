@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>    
+        <!-- 全局映射器启用缓存 -->    
+        <setting name="cacheEnabled" value="true" />   
+    </settings>
+    
+	<typeAliases>
+		<typeAlias alias="SysUser"	type="com.ptsoft.pis.account.model.vo.SysUser" />
+		<typeAlias alias="SysRole"	type="com.ptsoft.pis.account.model.vo.SysRole" />
+		<typeAlias alias="SysPermission" type="com.ptsoft.pis.system.model.vo.SysPermission" />
+	</typeAliases>
+	
+	
+	<plugins>
+		<!-- 指定数据库分页方言Dialect, 其它方言:OracleDialect,SQLServerDialect,SybaseDialect,DB2Dialect,PostgreSQLDialect,MySQLDialect,DerbyDialect,HSQLDialect -->
+		<plugin interceptor="cn.org.rapid_framework.ibatis3.plugin.OffsetLimitInterceptor">
+			<property name="dialectClass" value="cn.org.rapid_framework.jdbc.dialect.MySQLDialect" />
+		</plugin>
+	</plugins>
+	
+</configuration>

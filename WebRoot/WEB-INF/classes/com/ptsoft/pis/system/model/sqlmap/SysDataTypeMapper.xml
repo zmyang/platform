@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ptsoft.pis.system.dao.SysDataTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.ptsoft.pis.system.model.vo.SysDataType" >
+    <id column="DCTCD" property="dctcd" jdbcType="VARCHAR" />
+    <result column="TPCD" property="tpcd" jdbcType="VARCHAR" />
+    <result column="TPNM" property="tpnm" jdbcType="VARCHAR" />
+    <result column="TPID" property="tpid" jdbcType="INTEGER" />
+    <result column="JNID" property="jnid" jdbcType="VARCHAR" />
+    <result column="CMNTS" property="cmnts" jdbcType="VARCHAR" />
+    <result column="STS" property="sts" jdbcType="INTEGER" />
+    <result column="STNO" property="stno" jdbcType="FLOAT" />
+    <result column="CRTTM" property="crttm" jdbcType="TIMESTAMP" />
+    <result column="LSTUPDTTM" property="lstupdttm" jdbcType="TIMESTAMP" />
+    <result column="MNMNCCD" property="mnmnccd" jdbcType="VARCHAR" />
+     <result column="CHECKED" property="checked" jdbcType="INTEGER" />
+     <result column="OPERTAG" property="operTag" jdbcType="INTEGER" />
+     <result column="itmcd" property="itmcd" jdbcType="VARCHAR" />
+     <result column="prc" property="prc" jdbcType="FLOAT" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    DCTCD, TPCD, TPNM, TPID, JNID, CMNTS, STS, STNO, CRTTM, LSTUPDTTM, MNMNCCD
+  </sql>
+  
+  <select id="SysDataType_getByType" resultMap="BaseResultMap" parameterType="int" >
+    Select 
+    <include refid="Base_Column_List" />
+    From SysDataType
+    Where TPID = #{tpid,jdbcType=INTEGER}
+    Order by stno
+  </select>
+  
+  <select id="SysDataType_getAvailableByType" resultMap="BaseResultMap" parameterType="map">
+  	Select * From 
+  	(
+	  	Select <include refid="Base_Column_List" />
+	    From SysDataType
+	    Where TPID = #{typeId,jdbcType=INTEGER}
+	    And STS = 1
+	    Union
+	    Select <include refid="Base_Column_List" />
+	    From SysDataType
+	    Where TPID = #{typeId,jdbcType=INTEGER} And (DCTCD = #{dicCode,jdbcType=VARCHAR} Or TPCD = #{dicCode,jdbcType=VARCHAR})
+    )
+    Order by stno
+  </select>
+  
+  <select id="SysDataType_getById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from SysDataType
+    where DCTCD = #{dctcd,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="SysDataType_delete" parameterType="java.lang.String">
+    delete from SysDataType
+    where DCTCD = #{dctcd,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="SysDataType_insert" parameterType="com.ptsoft.pis.system.model.vo.SysDataType" >
+    insert into SysDataType (DCTCD, TPCD, 
+      TPNM, TPID, JNID, CMNTS, 
+      STS, STNO, CRTTM, LSTUPDTTM, MNMNCCD)
+    values (#{dctcd,jdbcType=VARCHAR}, #{tpcd,jdbcType=VARCHAR}, 
+      #{tpnm,jdbcType=VARCHAR}, #{tpid,jdbcType=INTEGER}, #{jnid,jdbcType=VARCHAR}, #{cmnts,jdbcType=VARCHAR}, 
+      #{sts,jdbcType=INTEGER}, #{stno,jdbcType=FLOAT}, #{crttm,jdbcType=TIMESTAMP}, #{lstupdttm,jdbcType=TIMESTAMP}, 
+      #{mnmnccd,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="SysDataType_update" parameterType="com.ptsoft.pis.system.model.vo.SysDataType" >
+    update SysDataType
+    set TPCD = #{tpcd,jdbcType=VARCHAR},
+      	TPNM = #{tpnm,jdbcType=VARCHAR},
+      	TPID = #{tpid,jdbcType=INTEGER},
+      	JNID = #{jnid,jdbcType=VARCHAR},
+      	CMNTS = #{cmnts,jdbcType=VARCHAR},
+      	STS = #{sts,jdbcType=INTEGER},
+      	STNO = #{stno,jdbcType=FLOAT},
+      	CRTTM = #{crttm,jdbcType=TIMESTAMP},
+      	LSTUPDTTM = #{lstupdttm,jdbcType=TIMESTAMP},
+      	MNMNCCD = #{mnmnccd,jdbcType=VARCHAR}
+    where DCTCD = #{dctcd,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="SysDataType_getStoreType" resultMap="BaseResultMap" parameterType="map" >
+  	<![CDATA[
+    select  t.dctcd,t.tpnm,(case when m.mpid>0 then 1  else 0 end ) as checked 
+    from sysdatatype t
+	left join sysstoretypemap m
+	on t.dctcd=m.sttpcd and m.stcd=#{stcd,jdbcType=VARCHAR}
+	where t.tpid=#{tpid,jdbcType=INTEGER}
+	]]>  
+  </select>
+  
+  <select id="SysDataType_getDataTypeCount" resultType="int" parameterType="map" >
+  	<![CDATA[
+		select count(*) from sysdatatype 
+		where tpcd=#{tpcd,jdbcType=VARCHAR} 
+		and tpid=#{tpid,jdbcType=INTEGER} 
+		and dctcd!=#{dctcd,jdbcType=VARCHAR}
+	]]>  
+  </select>
+  
+  <select  id="getPriceSystemList" resultMap="BaseResultMap" parameterType="map" >
+  		select d.dctcd,d.tpcd,d.tpnm,d.tpid,pb.itmcd,pb.prc from sysdatatype d  
+		left join 
+		(
+			select * from cashItemcodePrice p where p.itmcd=#{itmcd,jdbcType=VARCHAR} 
+		) pb
+		on d.dctcd=pb.prctp 
+		WHERE d.tpid=#{tpid,jdbcType=INTEGER}  and d.sts=1 order by dctcd asc
+  </select>
+  
+  <select id="SysDataType_findByDctcd" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	Select 
+    <include refid="Base_Column_List" />
+    From SysDataType
+    Where DCTCD = #{dctcd,jdbcType=VARCHAR}
+  </select>
+  
+</mapper>

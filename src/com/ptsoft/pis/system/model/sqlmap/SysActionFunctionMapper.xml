@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ptsoft.pis.system.dao.SysActionFunctionMapper">
+	<resultMap id="SysActionFunctionMap"
+		type="com.ptsoft.pis.system.model.vo.SysActionFunctionMap">
+		<id column="MPID" property="mpid" jdbcType="INTEGER" />
+		<result column="FNCTNID" property="fnctnid" jdbcType="VARCHAR" />
+		<result column="ACTNID" property="actnid" jdbcType="VARCHAR" />
+		<result column="ACTNLBL" property="actnlbl" jdbcType="VARCHAR" />
+		<result column="CHECKID" property="checkid" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="getRoleActionFunctionMap" resultMap="SysActionFunctionMap" parameterType="int">
+		Select m.*, a.actnlbl,(case when p.mpid>0 then 1 else 0 end) as checkid
+		From SysAction a
+		Left join SysActionFunctionMap m On a.actnid=m.actnid
+		Left join SysPermission p On p.mpid = m.mpid and p.rlid=#{roleId,jdbcType=INTEGER}
+		Order by a.stno
+   </select>
+</mapper>

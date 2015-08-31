@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ptsoft.pis.system.model.vo.SysBulletinBoradMapper" >
+  <resultMap id="BaseResultMap" type="com.ptsoft.pis.system.model.vo.SysBulletinBorad" >
+    <id column="bdid" property="bdid" jdbcType="INTEGER" />
+    <result column="sbjct" property="sbjct" jdbcType="VARCHAR" />
+    <result column="pblshdt" property="pblshdt" jdbcType="VARCHAR" />
+    <result column="cntnt" property="cntnt" jdbcType="VARCHAR" />
+    <result column="cmnts" property="cmnts" jdbcType="VARCHAR" />
+    <result column="crttm" property="crttm" jdbcType="VARCHAR" />
+    <result column="lstupdttm" property="lstupdttm" jdbcType="VARCHAR" />
+    <result column="def1" property="def1" jdbcType="VARCHAR" />
+    <result column="def2" property="def2" jdbcType="VARCHAR" />
+    <result column="def3" property="def3" jdbcType="VARCHAR" />
+    <result column="def4" property="def4" jdbcType="VARCHAR" />
+    <result column="def5" property="def5" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    b.bdid,b.sbjct,b.pblshdt,b.cntnt,b.cmnts,b.crttm,b.lstupdttm,b.def1,b.def2,b.def3,b.def4,b.def5
+  </sql>
+  
+  <select id="getBulletinBoradList" resultMap="BaseResultMap">
+	    select 
+	    <include refid="Base_Column_List" />
+	    from sysbulletinborad b
+	    order by b.pblshdt desc
+  </select>
+  
+   <select id="SysBulletinBorad_getById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		Select 
+		<include refid="Base_Column_List" />
+		from sysbulletinborad b 
+		where b.bdid = #{bdid}
+    </select>
+    
+    
+    <insert id="SysBulletinBorad_insert" parameterType="com.ptsoft.pis.system.model.vo.SysBulletinBorad">
+		<selectKey resultType="int" keyProperty="bdid" order="BEFORE">
+			Select count(LAST_INSERT_ID())+1 from sysbulletinborad
+        </selectKey>
+		Insert into sysbulletinborad(bdid, sbjct, pblshdt, cntnt, cmnts)
+		Values(#{bdid,jdbcType=INTEGER}, #{sbjct}, #{pblshdt}, #{cntnt}, #{cmnts})
+	</insert>
+	
+	<update id="SysBulletinBorad_update" parameterType="com.ptsoft.pis.system.model.vo.SysBulletinBorad">
+		Update sysbulletinborad
+		<set>
+			<if test="sbjct !=null">sbjct = #{sbjct},</if>
+			<if test="pblshdt !=null">pblshdt = #{pblshdt},</if>
+			<if test="cntnt !=null">cntnt = #{cntnt},</if>
+			<if test="cmnts !=null">cmnts = #{cmnts},</if>
+			<if test="crttm !=null">crttm = #{crttm},</if>
+			<if test="lstupdttm !=null">lstupdttm = #{lstupdttm}</if>
+		</set>
+		Where bdid = #{bdid}
+	</update>
+	
+	<delete id="SysBulletinBorad_delete" parameterType="java.lang.Integer">
+		Delete from sysbulletinborad where bdid = #{bdid}
+  	</delete>
+</mapper>

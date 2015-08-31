@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<sms_url>http://localhost:8080/EMS</sms_url>
+	
+	<salesData_path>Z:\</salesData_path>
+	
+</config>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="privilege">
+	<resultMap type="SysUser" id="UserResultMap">
+		<result column="usrId" jdbcType="INTEGER" property="usrId" />
+		<result column="rlId" jdbcType="INTEGER" property="role.rlId" />
+		<result column="rlNm" jdbcType="INTEGER" property="role.rlNm" />
+		<result column="lgnNm" jdbcType="VARCHAR" property="lgnNm" />
+		<result column="usrNm" jdbcType="VARCHAR" property="usrNm" />
+		<result column="pswd" jdbcType="VARCHAR" property="pswd" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+		<result column="sts" jdbcType="VARCHAR" property="sts" />
+		<result column="StCd" jdbcType="VARCHAR" property="stCd" />
+	</resultMap>
+	<select id="findAllUser" resultMap="UserResultMap">
+		Select u.*, r.rlNm 
+		From SysUser u Left join SysRole r On r.rlId = u.rlId
+		Order by u.usrId
+	</select>
+	
+	<select id="findAllUserByType" resultMap="UserResultMap" parameterType="int">
+		Select u.*, r.rlNm 
+		From SysUser u 
+		Left join SysRole r On r.rlId = u.rlId
+		Where r.sysTp = #{sysTp}
+		Order by u.usrId
+	</select>
+
+	<select id="getUserByName" resultMap="UserResultMap" parameterType="string">
+		Select u.*, r.rlNm 
+		From SysUser u Left join SysRole r On r.rlId = u.rlId
+		Where u.lgnNm = #{lgnNm}
+    </select>    
+    
+	<select id="getUserList" parameterType="SysUser" resultMap="UserResultMap">
+		Select u.*, r.rlNm 
+		From SysUser u Left join SysRole r On r.rlId = u.rlId
+		<where>
+			<if test="usrId !=null">u.usrId = #{usrId}</if>
+			<if test="lgnNm != null">AND u.lgnNm = #{lgnNm}</if>
+			<if test="pswd != null">AND u.pswd = #{pswd}</if>
+			<if test="usrNm != null">AND u.usrNm = #{usrNm}</if>
+			<if test="email != null">AND u.EMAIL = #{email}</if>
+			<if test="sts != null">AND u.sts = #{sts}</if>
+		</where>
+		<if test="sortColumns != null and sortColumns.length() != 0">
+			ORDER BY ${sortColumns}
+		</if>
+	</select>
+	
+	<select id="getUserListCount" parameterType="SysUser" resultType="int">
+		Select count(*) from SysUser
+		<where>
+			<if test="usrId !=null">usrId = #{usrId}</if>
+			<if test="lgnNm != null">AND lgnNm = #{lgnNm}</if>
+			<if test="pswd != null">AND pswd = #{pswd}</if>
+			<if test="usrNm != null">AND usrNm = #{usrNm}</if>
+			<if test="email != null">AND EMAIL = #{email}</if>
+			<if test="sts != null">AND sts = #{sts}</if>
+		</where>
+	</select>
+    
+    <select id="SysUser_getById" resultMap="UserResultMap" parameterType="java.lang.Integer">
+		Select u.*, r.rlNm 
+		From SysUser u Left join SysRole r On r.rlId = u.rlId 
+		Where u.usrId = #{usrId}
+    </select>
+    
+	<insert id="SysUser_insert" parameterType="SysUser">
+		<selectKey resultType="int" keyProperty="usrId" order="BEFORE">
+			Select LAST_INSERT_ID()+1 from SysUser
+        </selectKey>
+		Insert into SysUser(usrId, lgnNm, pswd, usrNm, rlId ,email, sts, StCd)
+		Values(#{usrId,jdbcType=INTEGER}, #{lgnNm}, #{pswd}, #{usrNm}, #{role.rlId}, #{email}, #{sts}, #{stCd})
+	</insert>
+	
+	<update id="SysUser_update" parameterType="SysUser">
+		Update SysUser
+		<set>
+			<if test="lgnNm !=null">lgnNm = #{lgnNm},</if>
+			<if test="pswd !=null">pswd = #{pswd},</if>
+			<if test="usrNm !=null">usrNm = #{usrNm},</if>
+			<if test="role !=null">rlId = #{role.rlId},</if>
+			<if test="email !=null">email = #{email},</if>
+			<if test="sts !=-1">sts = #{sts},</if>
+			StCd = #{stCd}
+		</set>
+		Where usrId = #{usrId}
+	</update>
+	
+	<delete id="SysUser_delete" parameterType="java.lang.Integer">
+		Delete from SysUser where usrId = #{usrId}
+  	</delete>
+  	
+  	<select id="getUserLogin" resultMap="UserResultMap" parameterType="map">
+		Select * From SysUser 
+		Where lgnNm = #{lgnNm,jdbcType=VARCHAR} and pswd = #{pswd,jdbcType=VARCHAR}
+		And sts = 1
+    </select> 
+
+	<update id="SysUser_profilelSave" parameterType="SysUser">
+		Update SysUser Set 
+		usrNm = #{usrNm,jdbcType=VARCHAR}, 
+		email = #{email,jdbcType=VARCHAR}
+		Where lgnNm = #{lgnNm,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="SysUser_passwordSave" parameterType="SysUser">
+		Update SysUser Set 
+		pswd = #{pswd,jdbcType=VARCHAR}
+		Where lgnNm = #{lgnNm,jdbcType=VARCHAR}
+	</update>
+</mapper>

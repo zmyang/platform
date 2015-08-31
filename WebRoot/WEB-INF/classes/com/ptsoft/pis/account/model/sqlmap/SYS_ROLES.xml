@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="privilege">
+	<resultMap type="SysRole" id="RoleMap">
+		<result column="rlId" jdbcType="INTEGER" property="rlId" />
+		<result column="rlNm" jdbcType="VARCHAR" property="rlNm" />
+		<result column="cmnts" jdbcType="VARCHAR" property="cmnts" />
+		<result column="sts" jdbcType="INTEGER" property="sts" />
+		<result column="SYSTP" 		property="sysTp" 	jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="findAllRole" resultMap="RoleMap">
+		Select * from SysRole Order by rlID
+	</select>
+	
+	<select id="SysRole_getById" parameterType="int" resultType="SysRole">
+		select *
+		from SysRole where rlId = #{id}
+	</select>
+	
+	<insert id="SysRole_insert" parameterType="SysRole">
+		<selectKey resultType="int" keyProperty="rlId" order="BEFORE">
+			Select LAST_INSERT_ID()+1 from SysRole
+	    </selectKey>
+		insert into SysRole(rlId, rlNm, cmnts, sts, sysTp)
+		values(#{rlId,jdbcType=INTEGER}, #{rlNm}, #{cmnts}, #{sts}, #{sysTp})
+	</insert>
+	
+	<update id="SysRole_update" parameterType="SysRole">
+		update SysRole
+		<set>
+			<if test="rlNm !=null">rlNm = #{rlNm},</if>
+			<if test="cmnts !=null">cmnts = #{cmnts},</if>
+			<if test="sts !=null">sts = #{sts},</if>
+			sysTp = #{sysTp}
+		</set>
+		where rlId = #{rlId}
+	</update>
+	
+	<delete id="SysRole_delete" parameterType="SysRole">
+		delete from SysRole where rlId = #{rlId}
+  </delete>
+</mapper>

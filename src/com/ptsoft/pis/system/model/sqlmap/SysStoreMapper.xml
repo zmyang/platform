@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ptsoft.pis.system.dao.SysStoreMapper" >
+  <resultMap id="BaseResultMap" type="com.ptsoft.pis.system.model.vo.SysStore" >
+    <id 	column="STCD" property="stCd" jdbcType="VARCHAR" />
+    <result column="STNM" property="stNm" jdbcType="VARCHAR" />
+    <result column="BRNDCD" property="brndCd" jdbcType="VARCHAR" />
+    <result column="BRNDNM" property="brndNm" jdbcType="VARCHAR" />
+    <result column="MKTCD" property="mktCd" jdbcType="VARCHAR" />
+    <result column="MKTNM" property="mktNm" jdbcType="VARCHAR" />
+    <result column="ZNCD" property="znCd" jdbcType="VARCHAR" />
+    <result column="ZNNM" property="znNm" jdbcType="VARCHAR" />
+    <result column="CMPNCD" property="cmpnCd" jdbcType="VARCHAR" />
+    <result column="CMPNNM" property="cmpnNm" jdbcType="VARCHAR" />
+    <result column="CITY" property="cityCd" jdbcType="VARCHAR" />
+    <result column="CITYNM" property="cityNm" jdbcType="VARCHAR" />
+    <result column="STTPCD" property="stTpCd" jdbcType="VARCHAR" />
+    <result column="STTPNM" property="stTpNm" jdbcType="VARCHAR" />
+    <result column="DSTRCT" property="dstrct" jdbcType="VARCHAR" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" />
+    <result column="TEL" property="tel" jdbcType="VARCHAR" />
+    <result column="POST" property="post" jdbcType="VARCHAR" />
+    <result column="ADRS" property="adrs" jdbcType="VARCHAR" />
+    <result column="NPRCTP" property="newPrcTp" jdbcType="VARCHAR" />
+    <result column="OLDPRCTP" property="oldPrcTp" jdbcType="VARCHAR" />
+    <result column="MNMNCCD" property="mnmnccd" jdbcType="VARCHAR" />
+    <result column="STS" property="sts" jdbcType="INTEGER" />
+    <result column="IS24H" property="is24h" jdbcType="INTEGER" />
+    <result column="OPRTAR" property="oprtar" jdbcType="FLOAT" />
+    
+    <result column="STMGR" property="stMgr" jdbcType="VARCHAR" />
+    <result column="AM" property="am" jdbcType="VARCHAR" />
+    <result column="OPRTNMGR" property="oprtnMgr" jdbcType="VARCHAR" />
+    <result column="OPRTNDRCT" property="oprtnDrct" jdbcType="VARCHAR" />
+    <result column="OPRTNGM" property="oprtnGm" jdbcType="VARCHAR" />
+    <result column="SU" property="su" jdbcType="VARCHAR" />
+    
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+  	Select s.STCD, s.STNM, s.BRNDCD, s.MKTCD, s.ZNCD, s.CMPNCD, s.CITY, s.DSTRCT, s.EMAIL, s.TEL, s.POST, s.ADRS, s.STMGR, s.AM, s.OPRTNMGR, s.OPRTNDRCT, s.OPRTNGM, s.NPRCTP, s.OLDPRCTP, s.MNMNCCD, s.STS, s.IS24H, s.SU, s.OPRTAR, s.stTpCd
+  	, t1.TpNm as BRNDNM, t2.TpNm as MKTNM, t3.TpNm as ZNNM, t4.TpNm as CMPNNM, t5.TpNm as CITYNM, t6.TpNm as STTPNM
+    From SysStore s
+    Left join SysDataType t1 On t1.dctCd = s.BRNDCD And t1.tpID = 7
+    Left join SysDataType t2 On t2.dctCd = s.MKTCD And t2.tpID = 6
+    Left join SysDataType t3 On t3.dctCd = s.ZNCD And t3.tpID = 8
+    Left join SysDataType t4 On t4.dctCd = s.CMPNCD And t4.tpID = 1
+    Left join SysDataType t5 On t5.dctCd = s.CITY And t5.tpID = 5
+    Left join SysDataType t6 On t6.dctCd = s.stTpCd And t6.tpID = 9
+  </sql>
+  
+  <select id="SysStore_findAll" resultMap="BaseResultMap" >
+    <include refid="Base_Column_List" />
+    <if test="_parameter != null and _parameter != ''">Where s.STCD = #{stcd,jdbcType=VARCHAR}</if>
+    Order by s.STCD
+  </select>
+  
+  <select id="SysStore_searchItems" resultMap="BaseResultMap" parameterType="java.lang.String">
+    <include refid="Base_Column_List" />
+    Where 
+    s.STCD Like #{parm,jdbcType=VARCHAR} Or
+    s.STNM Like #{parm,jdbcType=VARCHAR}
+    Order by s.STCD
+  </select>
+  
+  <select id="SysStore_getById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    <include refid="Base_Column_List" />
+    Where s.STCD = #{stcd,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="SysStore_findByBrndcd" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  	<include refid="Base_Column_List"  />
+    <if test="_parameter != null and _parameter != ''">Where s.BRNDCD = #{brndcd,jdbcType=VARCHAR}</if>
+    Order by s.STCD
+  </select>
+  
+  <delete id="SysStore_delete" parameterType="java.lang.String" >
+    delete from SysStore
+    where STCD = #{stcd,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="SysStore_insert" parameterType="com.ptsoft.pis.system.model.vo.SysStore" >
+    insert into SysStore 
+    (
+      STCD, BRNDCD, MKTCD, 
+      ZNCD, CMPNCD, CITY, 
+      DSTRCT, STNM, EMAIL, 
+      TEL, POST, ADRS, STMGR, 
+      AM, OPRTNMGR, OPRTNDRCT, 
+      OPRTNGM, NPRCTP, OLDPRCTP, MNMNCCD, 
+      STS, IS24H, SU, OPRTAR, stTpCd
+    )
+    values 
+    (
+      #{stCd,jdbcType=VARCHAR}, 
+      #{brndCd,jdbcType=VARCHAR}, 
+      #{mktCd,jdbcType=VARCHAR}, 
+      #{znCd,jdbcType=VARCHAR}, 
+      #{cmpnCd,jdbcType=VARCHAR}, 
+      #{cityCd,jdbcType=VARCHAR}, 
+      #{dstrct,jdbcType=VARCHAR}, 
+      #{stNm,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, 
+      #{tel,jdbcType=VARCHAR}, 
+      #{post,jdbcType=VARCHAR}, 
+      #{adrs,jdbcType=VARCHAR}, 
+      #{stMgr,jdbcType=VARCHAR}, 
+      #{am,jdbcType=VARCHAR}, 
+      #{oprtnMgr,jdbcType=VARCHAR}, 
+      #{oprtnDrct,jdbcType=VARCHAR}, 
+      #{oprtnGm,jdbcType=VARCHAR}, 
+      #{newPrcTp,jdbcType=VARCHAR}, 
+      #{oldPrcTp,jdbcType=VARCHAR}, 
+      #{mnmnccd,jdbcType=VARCHAR}, 
+      #{sts,jdbcType=INTEGER}, 
+      #{is24h,jdbcType=INTEGER}, 
+      #{su,jdbcType=VARCHAR}, 
+      #{oprtar,jdbcType=FLOAT},
+      #{stTpCd,jdbcType=VARCHAR}
+     )
+  </insert>
+  
+  <update id="SysStore_update" parameterType="com.ptsoft.pis.system.model.vo.SysStore" >
+    update SysStore
+    set BRNDCD = #{brndCd,jdbcType=VARCHAR},
+      MKTCD = #{mktCd,jdbcType=VARCHAR},
+      ZNCD = #{znCd,jdbcType=VARCHAR},
+      CMPNCD = #{cmpnCd,jdbcType=VARCHAR},
+      CITY = #{cityCd,jdbcType=VARCHAR},
+      DSTRCT = #{dstrct,jdbcType=VARCHAR},
+      STNM = #{stNm,jdbcType=VARCHAR},
+      EMAIL = #{email,jdbcType=VARCHAR},
+      TEL = #{tel,jdbcType=VARCHAR},
+      POST = #{post,jdbcType=VARCHAR},
+      ADRS = #{adrs,jdbcType=VARCHAR},
+      STMGR = #{stMgr,jdbcType=VARCHAR},
+      AM = #{am,jdbcType=VARCHAR},
+      OPRTNMGR = #{oprtnMgr,jdbcType=VARCHAR},
+      OPRTNDRCT = #{oprtnDrct,jdbcType=VARCHAR},
+      OPRTNGM = #{oprtnGm,jdbcType=VARCHAR},
+      NPRCTP = #{newPrcTp,jdbcType=VARCHAR},
+      OLDPRCTP = #{oldPrcTp,jdbcType=VARCHAR},
+      MNMNCCD = #{mnmnccd,jdbcType=VARCHAR},
+      STS = #{sts,jdbcType=INTEGER},
+      IS24H = #{is24h,jdbcType=INTEGER},
+      SU = #{su,jdbcType=VARCHAR},
+      OPRTAR = #{oprtar,jdbcType=FLOAT},
+      stTpCd = #{stTpCd,jdbcType=VARCHAR}
+    Where STCD = #{stCd,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="SysStore_getStoreByStcd" resultType="int" parameterType="java.lang.String" >
+    select count(*) from SysStore
+    Where STCD = #{stcd,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="SysStore_getStoreByStnm" resultType="int" parameterType="map" >
+    select count(*) from SysStore
+    Where STNM = #{stnm,jdbcType=VARCHAR} and STCD != #{stcd,jdbcType=VARCHAR}
+  </select>
+  
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="SYSFUNCTION" >
+  <resultMap id="BaseResultMap" type="com.ptsoft.pis.system.model.vo.SysFunction" >
+    <id column="FNCTNID" 		property="fnId" 	jdbcType="VARCHAR" />
+    <result column="FNCTNNM" 	property="fnNm" 	jdbcType="VARCHAR" />
+    <result column="MDLID" 		property="mdlId" 	jdbcType="INTEGER" />
+    <result column="PAGE"		property="page" 	jdbcType="VARCHAR" />
+    <result column="SYSTP" 		property="sysTp" 	jdbcType="INTEGER" />
+    <result column="PRNTID" 	property="prntId" 	jdbcType="VARCHAR" />
+    <result column="ICN" 		property="icn" 		jdbcType="VARCHAR" />
+    <result column="PGTP" 		property="pgTp" 	jdbcType="INTEGER" />
+    <result column="STNO" 		property="stNo" 	jdbcType="FLOAT" />
+    <result column="STS" 		property="sts" 		jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    f.FNCTNID, f.FNCTNNM, f.MDLID, ifnull(f.PAGE, ' ') as page, f.STNO, f.STS, f.PRNTID, ifnull(f.ICN,' ') as icn, f.PGTP, f.sysTp
+  </sql>
+  
+  <select id="getUserFunctions" resultMap="BaseResultMap" parameterType="int">
+   Select distinct  
+   <include refid="Base_Column_List" />
+   From sysfunction f
+   Left join sysactionfunctionmap fm on f.fnctnid=fm.fnctnid
+   Left join syspermission p on p.mpid=fm.mpid
+   Where p.rlid=#{rlid,jdbcType=VARCHAR} and f.sts=1 And f.PGTP <![CDATA[<]]> 3
+   And f.SysTp = (Select sysTp From SysRole Where rlId = #{rlId,jdbcType=INTEGER})
+   Order by f.MdlID, f.PrntID desc, f.StNo
+  </select>
+
+  <select id="getSysFunctions" resultMap="BaseResultMap" parameterType="int">
+   	Select 
+    <include refid="Base_Column_List" />
+    From SYSFUNCTION f
+    Where f.SysTp = (Select sysTp From SysRole Where rlId = #{rlId,jdbcType=INTEGER})
+    And f.sts=1 And f.PGTP <![CDATA[<]]> 3
+    Order by f.MdlID, f.PrntID desc, f.StNo
+  </select>	
+</mapper>

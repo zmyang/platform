@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd"
+	default-autowire="byType" default-lazy-init="true">
+    
+    <!--参考：http://www.blogjava.net/walwal/-->
+	<http entry-point-ref="authenticationProcessingFilterEntryPoint" access-decision-manager-ref="accessDecisionManager">		
+		<intercept-url pattern="/login*" filters="none" />
+		<intercept-url pattern="/images/**" filters="none" />
+		<intercept-url pattern="/css/**" filters="none" />
+		<intercept-url pattern="/js/**" filters="none" />
+		<intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
+		<logout logout-success-url="/login.do" />
+	</http>
+
+	<authentication-provider user-service-ref="userDetailsService">
+		<!-- 可设置hash使用sha1或md5散列密码后再存入数据库 plaintext-->
+		<password-encoder hash="md5" />
+	</authentication-provider>
+
+	<authentication-manager alias="authenticationManager" />
+	
+	<beans:bean class="com.ptsoft.common.filter.CustomAuthenticationProcessingFilter">
+		<custom-filter position="AUTHENTICATION_PROCESSING_FILTER" />
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<!--认证成功之后的缺省URL-->
+		<beans:property name="defaultTargetUrl" value="/" />
+		<!--认证失败的URL-->
+		<beans:property name="authenticationFailureUrl" value="/login.do?error=true" />
+		<!--是否无论用户要访问的页面是什么，认证成功之后都跳转到defaultTargetUrl-->
+		<beans:property name="alwaysUseDefaultTargetUrl" value="false" />
+	</beans:bean>
+
+	<!--表单认证入口点-->
+	<beans:bean id="authenticationProcessingFilterEntryPoint" class="org.springframework.security.ui.webapp.AuthenticationProcessingFilterEntryPoint">
+		<!--指定登录页面/login.jsp-->
+		<beans:property name="loginFormUrl" value="/outsession.do" />
+	</beans:bean>
+
+	<!--指派用户信息源-->
+	<beans:bean id="userDetailsService" class="com.ptsoft.pis.account.service.UserDetailServiceImpl" />
+
+	<!-- 授权判断配置, 将授权名称的默认前缀由ROLE_改为A_. -->
+	<beans:bean id="accessDecisionManager" class="org.springframework.security.vote.AffirmativeBased">
+		<beans:property name="decisionVoters">
+			<beans:list>
+				<beans:bean class="org.springframework.security.vote.RoleVoter">
+					<beans:property name="rolePrefix" value="A_" />
+				</beans:bean>
+				<beans:bean class="org.springframework.security.vote.AuthenticatedVoter" />
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+</beans:beans>

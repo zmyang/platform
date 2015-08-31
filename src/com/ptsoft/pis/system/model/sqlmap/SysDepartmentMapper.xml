@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ptsoft.pis.system.dao.SysDepartmentMapper" >
+  <resultMap id="BaseResultMap" type="com.ptsoft.pis.system.model.vo.SysDepartment" >
+    <id column="DCTCD" property="dctcd" jdbcType="VARCHAR" />
+    <result column="TPCD" property="tpcd" jdbcType="VARCHAR" />
+    <result column="TPNM" property="tpnm" jdbcType="VARCHAR" />
+    <result column="TPID" property="tpid" jdbcType="INTEGER" />
+    <result column="JNID" property="jnid" jdbcType="VARCHAR" />
+    <result column="CMNTS" property="cmnts" jdbcType="VARCHAR" />
+    <result column="STS" property="sts" jdbcType="INTEGER" />
+    <result column="STNO" property="stno" jdbcType="FLOAT" />
+    <result column="CRTTM" property="crttm" jdbcType="TIMESTAMP" />
+    <result column="LSTUPDTTM" property="lstupdttm" jdbcType="TIMESTAMP" />
+    <result column="MNMNCCD" property="mnmnccd" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <insert id="SysDepartment_insert" parameterType="com.ptsoft.pis.system.model.vo.SysDepartment" >
+    insert into SysDepartment (DCTCD, TPCD, TPNM, TPID, JNID, CMNTS, STS, STNO, CRTTM, LSTUPDTTM, MNMNCCD, Def2)
+    values 
+    (
+      #{dctcd,jdbcType=VARCHAR}, #{tpcd,jdbcType=VARCHAR}, 
+      #{tpnm,jdbcType=VARCHAR}, #{tpid,jdbcType=INTEGER}, #{jnid,jdbcType=VARCHAR}, #{cmnts,jdbcType=VARCHAR}, 
+      #{sts,jdbcType=INTEGER}, #{stno,jdbcType=FLOAT}, #{crttm,jdbcType=TIMESTAMP}, #{lstupdttm,jdbcType=TIMESTAMP}, 
+      #{mnmnccd,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}
+     )
+  </insert>
+  
+  <select id="SysDepartment_getByStore" resultMap="BaseResultMap" parameterType="String" >
+    Select 
+    DCTCD, TPCD, TPNM, TPID, JNID, CMNTS, STS, STNO, CRTTM, LSTUPDTTM, MNMNCCD
+    From SysDepartment
+    Where Def2 = #{storeCode,jdbcType=VARCHAR}
+	And Sts = 1
+	Order by Stno
+  </select>
+
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
+	default-autowire="byName">
+	
+	<!-- 加载properties资源配置文件 -->
+	<context:property-placeholder location="WEB-INF/application.properties" />
+
+	<!-- 数据源配置 -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" 		value="${url}" />
+		<property name="username" 	value="${user}" />
+		<property name="password" 	value="${password}" />
+	</bean>
+
+	<!-- 事务配置 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 支持 @Transactional 标记 -->
+	<!-- <tx:annotation-driven/> -->
+
+	<!-- 需要事务控制的业务方法配置 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" 		/>
+			<tx:method name="find*" 	read-only="true" />
+			<tx:method name="query*" 	read-only="true" />
+			<tx:method name="select*" 	read-only="true" />
+			<tx:method name="count*" 	read-only="true" />
+			<tx:method name="to*" 		read-only="true" />
+			<tx:method name="*" 		rollback-for="Exception" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 事务控制拦截器 -->
+	<aop:config proxy-target-class="true">
+		<aop:advisor
+			pointcut="execution(* *..service..*Service.*(..)) or execution(* *..service..*Impl.*(..))"
+			advice-ref="txAdvice" />
+	</aop:config>
+</beans>

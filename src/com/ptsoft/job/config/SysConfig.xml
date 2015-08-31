@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config>
+	<jdbc>
+		<!-- 测试-->
+		<mid url="jdbc:oracle:thin:@58.210.192.150:15211:erp" username="yxcz" password="yxcz" />
+		<mis url="jdbc:oracle:thin:@120.25.127.15:1521:SMS" username="ptsoft" password="PartnerSoft_1234" />
+	</jdbc>
+</config>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ptsoft.pis.system.dao.SysactionMapper" >
+  <resultMap id="BaseResultMap" type="com.ptsoft.pis.system.model.vo.SysAction" >
+    <id column="ACTNID" property="actnid" jdbcType="VARCHAR" />
+    <result column="ACTNLBL" property="actnlbl" jdbcType="VARCHAR" />
+    <result column="ATCNKY" property="atcnky" jdbcType="VARCHAR" />
+    <result column="TLTP" property="tltp" jdbcType="VARCHAR" />
+    <result column="ICN" property="icn" jdbcType="VARCHAR" />
+    <result column="STNO" property="stno" jdbcType="FLOAT" />
+    <result column="DEF1" property="def1" jdbcType="VARCHAR" />
+    <result column="DEF2" property="def2" jdbcType="VARCHAR" />
+    <result column="DEF3" property="def3" jdbcType="VARCHAR" />
+    <result column="DEF4" property="def4" jdbcType="VARCHAR" />
+    <result column="DEF5" property="def5" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ACTNID, ACTNLBL, ATCNKY, TLTP, ICN, STNO, DEF1, DEF2, DEF3, DEF4, DEF5
+  </sql>
+  
+  <select id="getUserActions" resultMap="BaseResultMap" parameterType="map">
+  	Select a.* 
+  	From SysActionFunctionMap m
+  	Left join SysAction a On a.actnid = m.actnid
+    Left join syspermission p on p.mpid=m.mpid
+  	Where m.fnctnID = #{functionID,jdbcType=VARCHAR} 
+  	And p.rlid=#{rlId,jdbcType=VARCHAR}
+  	Order by a.stno
+  </select>
+  
+  <select id="SysAction_getById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from SYSACTION
+    where ACTNID = #{actnid,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="SysAction_delete" parameterType="java.lang.String" >
+    delete from SYSACTION
+    where ACTNID = #{actnid,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="SysAction_insert" parameterType="com.ptsoft.pis.system.model.vo.SysAction" >
+    insert into SYSACTION (ACTNID, ACTNLBL, ATCNKY, 
+      TLTP, ICN, STNO, DEF1, 
+      DEF2, DEF3, DEF4, DEF5
+      )
+    values (#{actnid,jdbcType=VARCHAR}, #{actnlbl,jdbcType=VARCHAR}, #{atcnky,jdbcType=VARCHAR}, 
+      #{tltp,jdbcType=VARCHAR}, #{icn,jdbcType=VARCHAR}, #{stno,jdbcType=FLOAT}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <update id="SysAction_update" parameterType="com.ptsoft.pis.system.model.vo.SysAction" >
+    update SYSACTION
+    set ACTNLBL = #{actnlbl,jdbcType=VARCHAR},
+      ATCNKY = #{atcnky,jdbcType=VARCHAR},
+      TLTP = #{tltp,jdbcType=VARCHAR},
+      ICN = #{icn,jdbcType=VARCHAR},
+      STNO = #{stno,jdbcType=FLOAT},
+      DEF1 = #{def1,jdbcType=VARCHAR},
+      DEF2 = #{def2,jdbcType=VARCHAR},
+      DEF3 = #{def3,jdbcType=VARCHAR},
+      DEF4 = #{def4,jdbcType=VARCHAR},
+      DEF5 = #{def5,jdbcType=VARCHAR}
+    where ACTNID = #{actnid,jdbcType=VARCHAR}
+  </update>
+</mapper>

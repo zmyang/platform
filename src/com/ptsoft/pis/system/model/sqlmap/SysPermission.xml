@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ptsoft.pis.system.dao.SysPermissionMapper" >
+   <resultMap id="SysPermission" type="com.ptsoft.pis.system.model.vo.SysPermission">
+ 	<result column="RLID" property="rlid" jdbcType="INTEGER" />
+ 	<result column="MPID" property="mpid" jdbcType="INTEGER" />
+   </resultMap>
+   <delete id="deletePermissionByRlId" parameterType="java.lang.String">
+		delete from syspermission where RLID = #{rlId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="SysPermission_insert" parameterType="SysPermission">
+		insert into syspermission(RLID,MPID) values (#{rlid,jdbcType=INTEGER},#{mpid,jdbcType=INTEGER})
+  </insert>
+</mapper>
